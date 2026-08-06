@@ -5,19 +5,19 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    root: path.resolve(__dirname, '../frontend'),
-    envDir: path.resolve(__dirname, '../'),
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '../frontend'),
+        '@': path.resolve(__dirname, './src'),
       },
     },
-    build: {
-      outDir: path.resolve(__dirname, '../dist'),
-      emptyOutDir: true,
-    },
     server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3000',
+          changeOrigin: true,
+        },
+      },
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',

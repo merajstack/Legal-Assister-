@@ -79,8 +79,7 @@ export function AiAnalysisPipeline({ payload, onComplete, onError }: AiAnalysisP
         let dispatchedFormattedEmail = "";
 
         try {
-          const apiBase = import.meta.env.VITE_API_BASE_URL || "";
-          const dispatchRes = await fetch(`${apiBase}/api/webhook-dispatch`, {
+          const dispatchRes = await fetch(`/api/webhook-dispatch`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(immediateWebhookPayload),
@@ -106,16 +105,22 @@ export function AiAnalysisPipeline({ payload, onComplete, onError }: AiAnalysisP
           await new Promise((r) => setTimeout(r, 500));
         }
 
-        const apiBase = import.meta.env.VITE_API_BASE_URL || "";
-        const res = await fetch(`${apiBase}/api/analyze`, {
+        const res = await fetch(`/api/analyze`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const resText = await res.text();
+        let data;
+        try {
+          data = JSON.parse(resText);
+        } catch (e) {
+          throw new Error(`Backend server returned an invalid response (HTTP ${res.status}). Ensure the backend is running and not returning a 404 page.`);
+        }
+
         if (!res.ok) {
-          throw new Error(data.error || "Failed to analyze case.");
+          throw new Error(data.error || `Failed to analyze case. HTTP ${res.status}`);
         }
 
         if (dispatchedDraftedLetter && dispatchedDraftedLetter.trim().length > 0) {
