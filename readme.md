@@ -2,7 +2,7 @@
 ### AI-Powered Consumer Legal Assistance Platform
 
 **Developed by:**  
-@merakstack, @shiva-code-og, @vignesh-0314, @navaneesh
+@merakstack, @shiva-code-og, @navaneesh
 
 ---
 
